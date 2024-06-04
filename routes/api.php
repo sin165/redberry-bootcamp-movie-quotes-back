@@ -10,6 +10,7 @@ Route::controller(AuthController::class)->group(function () {
 	Route::post('/login', 'login')->middleware(PreventAuthenticatedAccess::class)->name('login');
 	Route::get('/user', 'getCurrentUser')->middleware('auth:sanctum')->name('me');
 	Route::post('/logout', 'logout')->middleware('auth:sanctum')->name('logout');
+	Route::post('/email/verification-notification', 'resendEmail')->middleware('throttle:6,1')->name('verification.send');
 	Route::post('/forgot-password', 'sendResetLink')->name('password.email');
 	Route::post('/reset-password', 'resetPassword')->name('password.update');
 });

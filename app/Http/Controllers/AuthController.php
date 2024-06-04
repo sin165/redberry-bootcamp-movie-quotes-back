@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResendEmailRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\SendResetLinkRequest;
 use App\Http\Resources\UserResource;
@@ -69,6 +70,17 @@ class AuthController extends Controller
 		$request->session()->invalidate();
 		$request->session()->regenerateToken();
 		return response()->json(['message' => 'Logged out']);
+	}
+
+	public function resendEmail(ResendEmailRequest $request): JsonResponse
+	{
+		if ($request->has('id')) {
+			$user = User::findOrFail($request->validated()['id']);
+		} else {
+			$user = User::where('email', $request->validated()['email'])->first();
+		}
+		$user->sendEmailVerificationNotification();
+		return response()->json(['message' => 'Verification link sent!']);
 	}
 
 	public function sendResetLink(SendResetLinkRequest $request): JsonResponse
