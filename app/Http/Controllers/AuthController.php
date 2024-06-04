@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\SendResetLinkRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -64,5 +69,37 @@ class AuthController extends Controller
 		$request->session()->invalidate();
 		$request->session()->regenerateToken();
 		return response()->json(['message' => 'Logged out']);
+	}
+
+	public function sendResetLink(SendResetLinkRequest $request): JsonResponse
+	{
+		$status = Password::sendResetLink(
+			$request->validated()
+		);
+
+		if ($status === Password::RESET_LINK_SENT) {
+			return response()->json(['message' => __($status)]);
+		} else {
+			return response()->json(['message' => __($status)], 400);
+		}
+	}
+
+	public function resetPassword(ResetPasswordRequest $request): JsonResponse
+	{
+		$status = Password::reset(
+			$request->validated(),
+			function (User $user, string $password) {
+				$user->forceFill([
+					'password' => $password,
+				])->setRememberToken(Str::random(60));
+				$user->save();
+				event(new PasswordReset($user));
+			}
+		);
+		if ($status === Password::PASSWORD_RESET) {
+			return response()->json(['message' => __($status)]);
+		} else {
+			return response()->json(['message' => __($status)], 400);
+		}
 	}
 }
