@@ -74,11 +74,7 @@ class AuthController extends Controller
 
 	public function resendEmail(ResendEmailRequest $request): JsonResponse
 	{
-		if ($request->has('id')) {
-			$user = User::findOrFail($request->validated()['id']);
-		} else {
-			$user = User::where('email', $request->validated()['email'])->first();
-		}
+		$user = User::where('email', $request->validated()['email'])->first();
 		$user->sendEmailVerificationNotification();
 		return response()->json(['message' => 'Verification link sent!']);
 	}

@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
 	public function boot(): void
 	{
 		VerifyEmail::toMailUsing(function (object $notifiable, string $url): MailMessage {
-			$urlForFrontend = config('app.frontend_url') . '?verify_url=' . urlencode($url);
+			$urlForFrontend = config('app.frontend_url') . '?verify_url=' . urlencode($url) . '&email=' . $notifiable->email;
 			return (new MailMessage)->subject('Please verify your email')->view(
 				['email-verification', 'email-verification-plain'],
 				['url' => $urlForFrontend, 'name' => $notifiable->name]

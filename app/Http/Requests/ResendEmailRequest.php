@@ -9,8 +9,7 @@ class ResendEmailRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
-			'id'    => 'required_without:email|exists:users',
-			'email' => 'required_without:id|exists:users',
+			'email' => 'required|exists:users',
 		];
 	}
 }
