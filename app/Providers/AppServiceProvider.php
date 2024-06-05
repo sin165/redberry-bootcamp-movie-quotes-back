@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
 
 		ResetPassword::toMailUsing(function (object $notifiable, string $token): MailMessage {
 			$frontendUrl = config('app.frontend_url');
-			$url = $frontendUrl . '?password-reset-token=' . $token . '&email=' . $notifiable->email;
+			$url = $frontendUrl . '?password_reset_token=' . $token . '&email=' . $notifiable->email;
 			return (new MailMessage)->subject('Reset Password')->view(
 				['password-reset', 'password-reset-plain'],
 				['url' => $url, 'name' => $notifiable->name]
