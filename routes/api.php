@@ -13,4 +13,6 @@ Route::controller(AuthController::class)->group(function () {
 	Route::post('/email/verification-notification', 'resendEmail')->middleware('throttle:6,1')->name('verification.send');
 	Route::post('/forgot-password', 'sendResetLink')->name('password.email');
 	Route::post('/reset-password', 'resetPassword')->name('password.update');
+	Route::get('/google/redirect', 'redirectToGoogle')->name('google.redirect');
+	Route::get('/google/callback', 'handleGoogleCallback')->name('google.callback');
 });
