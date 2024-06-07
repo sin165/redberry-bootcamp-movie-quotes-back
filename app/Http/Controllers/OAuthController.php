@@ -22,23 +22,19 @@ class OAuthController extends Controller
 	public function handleGoogleCallback(Request $request): JsonResponse
 	{
 		$googleUser = Socialite::driver('google')->user();
-		$user = User::where('email', $googleUser->email)->first();
-		if ($user) {
-			if (!$user->google_id) {
-				$user->google_id = $googleUser->id;
-				$user->save();
-			}
-			if (!$user->email_verified_at) {
-				$user->markEmailAsVerified();
-				event(new Verified($user));
-			}
-		} else {
-			$user = User::create([
+		$user = User::firstOrCreate(
+			['email' => $googleUser->email],
+			[
 				'google_id' => $googleUser->id,
 				'name'      => $googleUser->name,
-				'email'     => $googleUser->email,
 				'password'  => rand(100000, 999999),
-			]);
+			]
+		);
+		if (!$user->google_id) {
+			$user->google_id = $googleUser->id;
+			$user->save();
+		}
+		if (!$user->email_verified_at) {
 			$user->markEmailAsVerified();
 			event(new Verified($user));
 		}
