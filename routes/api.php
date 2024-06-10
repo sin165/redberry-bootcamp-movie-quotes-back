@@ -3,9 +3,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Middleware\PreventAuthenticatedAccess;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
-Route::controller(AuthController::class)->group(function () {
+Route::controller(AuthController::class)->middleware(SetLocale::class)->group(function () {
 	Route::post('/register', 'register')->name('register');
 	Route::get('/email/verify/{id}/{hash}', 'verifyEmail')->middleware(['signed'])->name('verification.verify');
 	Route::post('/login', 'login')->middleware(PreventAuthenticatedAccess::class)->name('login');

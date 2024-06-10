@@ -56,7 +56,7 @@ class AuthController extends Controller
 			]);
 		}
 
-		return response()->json(['message' => 'Login failed'], 401);
+		return response()->json(['message' => __('auth.failed')], 401);
 	}
 
 	public function getCurrentUser(Request $request): UserResource
