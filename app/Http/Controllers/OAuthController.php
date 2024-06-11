@@ -38,6 +38,10 @@ class OAuthController extends Controller
 			$user->markEmailAsVerified();
 			event(new Verified($user));
 		}
+		if (!$user->getFirstMedia('avatars')) {
+			$user->addMediaFromUrl($googleUser->avatar)->toMediaCollection('avatars');
+			$user->load('media');
+		}
 		Auth::login($user);
 		$request->session()->regenerate();
 		return response()->json([
