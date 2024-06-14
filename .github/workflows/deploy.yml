@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - 'CI/CD'
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -19,7 +18,7 @@ jobs:
         with:
           mysql database: laravel-test-db
           mysql user: laravel_test_user
-          mysql password: example
+          mysql password: laravel
       - name: Copy .env
         run: cp .env.example .env
       - name: Install composer Dependencies
@@ -44,17 +43,17 @@ jobs:
           DB_CONNECTION: mysql
           DB_DATABASE: laravel-test-db
         run: php artisan test
-      # - name: Deploy to Server
-      #   if: ${{ success() }}
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USERNAME }}
-      #     key: ${{ secrets.SSH_KEY }}
-      #     script_stop: true
-      #     script: |
-      #       cd apps
-      #       cd back-movie-quotes-tamar-sinauridze
-      #       git pull
-      #       composer i
-      #       php artisan migrate --force
+      - name: Deploy to Server
+        if: ${{ success() }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            cd apps
+            cd back-movie-quotes-tamar-sinauridze
+            git pull
+            composer i
+            php artisan migrate --force
