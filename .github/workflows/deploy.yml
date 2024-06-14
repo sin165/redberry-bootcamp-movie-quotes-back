@@ -1,0 +1,59 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - uses: actions/checkout@v4
+      - name: Shutdown Ubuntu MySQL
+        run: sudo service mysql stop
+      - name: Set up MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql database: laravel-test-db
+          mysql user: laravel_test_user
+          mysql password: laravel
+      - name: Copy .env
+        run: cp .env.example .env
+      - name: Install composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Wait for MySQL
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" --silent; do
+            echo "Waiting for database connection..."
+            sleep 1
+          done
+      - name: Setup Project
+        run: |
+          php artisan migrate --force
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan key:generate
+      - name: Directory Permissions
+        run: chmod 755 -R storage bootstrap/cache
+      - name: Run Unit tests
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: mysql
+          DB_DATABASE: laravel-test-db
+        run: php artisan test
+      - name: Deploy to Server
+        if: ${{ success() }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            cd apps
+            cd back-movie-quotes-tamar-sinauridze
+            git pull
+            composer i
+            php artisan migrate --force
