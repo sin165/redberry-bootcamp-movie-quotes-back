@@ -12,7 +12,10 @@ jobs:
         with:
           php-version: '8.3'
       - uses: actions/checkout@v4
-      - uses: mirromutth/mysql-action@v1.1
+      - name: Shutdown Ubuntu MySQL
+        run: sudo service mysql stop
+      - name: Set up MySQL
+        uses: mirromutth/mysql-action@v1.1
         with:
           mysql database: laravel-test-db
           mysql user: laravel_test_user
@@ -21,6 +24,12 @@ jobs:
         run: cp .env.example .env
       - name: Install composer Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Wait for MySQL
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" --silent; do
+            echo "Waiting for database connection..."
+            sleep 1
+          done
       - name: Setup Project
         run: |
           php artisan migrate --force
