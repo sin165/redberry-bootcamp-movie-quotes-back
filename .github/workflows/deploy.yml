@@ -32,7 +32,6 @@ jobs:
           done
       - name: Setup Project
         run: |
-          php artisan migrate --force
           php artisan config:clear
           php artisan cache:clear
           php artisan key:generate
@@ -42,6 +41,7 @@ jobs:
         env:
           APP_ENV: testing
           DB_CONNECTION: mysql
+          DB_DATABASE: laravel-test-db
         run: php artisan test
       # - name: Deploy to Server
       #   if: ${{ success() }}
