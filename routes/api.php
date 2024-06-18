@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OAuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\PreventAuthenticatedAccess;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
@@ -21,3 +22,5 @@ Route::controller(OAuthController::class)->group(function () {
 	Route::get('/google/redirect', 'redirectToGoogle')->name('google.redirect');
 	Route::get('/google/callback', 'handleGoogleCallback')->name('google.callback');
 });
+
+Route::post('/profile', [ProfileController::class, 'update'])->middleware([SetLocale::class, 'auth:sanctum'])->name('profile.update');
