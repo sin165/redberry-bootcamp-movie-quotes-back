@@ -57,3 +57,4 @@ jobs:
             git pull
             composer i
             php artisan migrate --force
+            php artisan optimize
