@@ -6,6 +6,7 @@ use App\Notifications\Auth\QueuedResetPassword;
 use App\Notifications\Auth\QueuedVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
@@ -58,5 +59,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
 	public function sendPasswordResetNotification($token): void
 	{
 		$this->notify(new QueuedResetPassword($token));
+	}
+
+	public function movies(): HasMany
+	{
+		return $this->hasMany(Movie::class);
 	}
 }
