@@ -14,6 +14,7 @@
       font-weight: 400;
     }
     .container {
+      background-color: #181623;
       background: linear-gradient(187.16deg, #181623 0.07%, #191725 51.65%, #0D0B14 98.75%);
       padding: 78px 35px 89px 35px;
     }
@@ -34,7 +35,7 @@
     p {
       margin: 24px 0;
     }
-    a {
+    a.link {
       display: block;
       margin-bottom: 40px;
       text-decoration: none;
@@ -47,6 +48,7 @@
     a:hover {
       background-color: #CC0E10;
     }
+    p span,
     a span {
       color: #FFFFFF;
     }
@@ -58,6 +60,9 @@
       word-break: break-all;
       margin-bottom: 41px;
       margin: 16px 0 41px 0;
+    }
+    .url a span {
+      color: #DDCCAA;
     }
     @media only screen and (min-width: 1024px) {
       .container {
@@ -80,13 +85,13 @@
     <h2>MOVIE QUOTES</h2>
     </header>
     <main>
-      <p>Hola {{ $name }}!</p>
-      <p>Please click the button below to change your password:</p>
-      <a href="{{ $url }}"><span>Change password</span></a>
-      <p>If clicking doesn't work, you can try copying and pasting it to your browser:</p>
-      <p class="url">{{ $url }}</p>
-      <p>If you have any problems, please contact us: support@moviequotes.ge</p>
-      <p>MovieQuotes Crew</p>
+      <p><span>Hola {{ $name }}!</span></p>
+      <p><span>Please click the button below to change your password:</span></p>
+      <a href="{{ $url }}" class="link"><span>Change password</span></a>
+      <p><span>If clicking doesn't work, you can try copying and pasting it to your browser:</span></p>
+      <p class="url"><a href=""><span>{{ $url }}</span></a></p>
+      <p><span>If you have any problems, please contact us: <a href=""><span>support@moviequotes.ge</span></a></span></p>
+      <p><span>MovieQuotes Crew</span></p>
     </main>
   </div>
 </body>
