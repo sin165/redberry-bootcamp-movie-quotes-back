@@ -30,4 +30,6 @@ Route::controller(MovieController::class)->middleware(SetLocale::class)->group(f
 	Route::get('/movies', 'index')->middleware('auth:sanctum')->name('movies.index');
 	Route::post('/movies', 'store')->middleware('auth:sanctum')->name('movies.store');
 	Route::get('/movies/{movie}', 'show')->middleware('auth:sanctum')->name('movies.show');
+	Route::patch('/movies/{movie}', 'update')->middleware('auth:sanctum')->can('update', 'movie')->name('movies.update');
+	Route::delete('/movies/{movie}', 'destroy')->middleware('auth:sanctum')->can('delete', 'movie')->name('movies.destroy');
 });
