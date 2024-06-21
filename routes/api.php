@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\PreventAuthenticatedAccess;
@@ -24,3 +25,11 @@ Route::controller(OAuthController::class)->group(function () {
 });
 
 Route::post('/profile', [ProfileController::class, 'update'])->middleware([SetLocale::class, 'auth:sanctum'])->name('profile.update');
+
+Route::controller(MovieController::class)->middleware(SetLocale::class)->group(function () {
+	Route::get('/movies', 'index')->middleware('auth:sanctum')->name('movies.index');
+	Route::post('/movies', 'store')->middleware('auth:sanctum')->name('movies.store');
+	Route::get('/movies/{movie}', 'show')->middleware('auth:sanctum')->name('movies.show');
+	Route::patch('/movies/{movie}', 'update')->middleware('auth:sanctum')->can('update', 'movie')->name('movies.update');
+	Route::delete('/movies/{movie}', 'destroy')->middleware('auth:sanctum')->can('delete', 'movie')->name('movies.destroy');
+});

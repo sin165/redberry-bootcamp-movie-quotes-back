@@ -1,7 +1,9 @@
 <?php
 
 return [
-	'unique' => ':attribute დაკავებულია.',
+	'unique'   => ':attribute დაკავებულია.',
+	'english'  => 'მხოლოდ ლათინური სიმბოლოები',
+	'georgian' => 'მხოლოდ ქართული სიმბოლოები',
 
 	'attributes' => [
 		'email' => 'მეილი',
